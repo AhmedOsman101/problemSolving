@@ -21,9 +21,9 @@ declare(strict_types=1);
  * @param int $m
  * @param int[] $nums2
  * @param int $n
- * @return null
+ * @return void
  */
-function merge(&$nums1, $m, $nums2, $n) {
+function merge(array &$nums1, int $m, array $nums2, int $n): void {
   $nums1 = array_slice($nums1, 0, length: $m);
   $nums2 = array_slice($nums2, 0, length: $n);
 
