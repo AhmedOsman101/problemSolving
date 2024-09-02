@@ -15,7 +15,7 @@ declare(strict_types=1);
  */
 
 
-function majorityElement($nums): int {
+function majorityElement(array $nums): int {
   $nums = array_count_values($nums);
   return array_search(max($nums), $nums);
 }
