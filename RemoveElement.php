@@ -21,7 +21,7 @@ declare(strict_types=1);
  * @param int $val
  * @return int
  */
-function removeElement(&$nums, $val) {
+function removeElement(array &$nums, int $val): int {
 
   $nums = array_diff($nums, [$val]);
 
