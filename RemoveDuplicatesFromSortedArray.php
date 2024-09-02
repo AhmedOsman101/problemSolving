@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/description/
+ * https://leetcode.com/problems/remove-duplicates-from-sorted-array/description/
  *
  * Given an integer array `nums` sorted in non-decreasing order, remove the
  * duplicates in-place such that each unique element appears only once. The
@@ -21,14 +21,14 @@ declare(strict_types=1);
  * @param int[] $nums
  * @return int
  */
-function removeDuplicates(&$nums) {
+function removeDuplicates(array &$nums): int {
   $nums = array_unique($nums);
 
   return sizeOf($nums);
 }
 
 /* another solution
-function removeDuplicates(&$nums) {
+function removeDuplicates(&$nums): int {
   $result = [];
   foreach ($nums as $num) {
     if (in_array($num, $result)) continue;
