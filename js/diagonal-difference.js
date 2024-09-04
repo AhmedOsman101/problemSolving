@@ -11,10 +11,10 @@ function diagonalDifference(arr) {
         right.push( arr[cur][i])
         cur++
     }
-    let rsum = 0
-    let lsum =0
-    left.map(item => lsum+=(item))
-    right.map(item => rsum+=(item))
+
+    let rsum = right.reduce((partialSum, a) => partialSum + a,0)
+    let lsum =left.reduce((partialSum, a) => partialSum + a, 0)
 
     return Math.abs(lsum-rsum)
 }
+
