@@ -15,4 +15,4 @@ def validate_code(code):
 #         return True
 #     return False
 
-print("g" > "d")
+# print("g" > "d")
