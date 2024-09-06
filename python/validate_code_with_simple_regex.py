@@ -14,3 +14,5 @@ def validate_code(code):
 #     if str[0] == "1" or str[0] == "2" or str[0]=="3":
 #         return True
 #     return False
+
+print("g" > "d")
