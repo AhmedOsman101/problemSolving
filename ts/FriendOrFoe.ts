@@ -10,7 +10,7 @@
  * @param friends
  * @returns
  */
-export function friend(friends: string[]): string[] {
+function friend(friends: string[]): string[] {
   return friends.filter((name) => name.length === 4);
 }
 

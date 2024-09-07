@@ -12,7 +12,7 @@
  * Output will consist of a list of string values (in Haskell and C: `Open` or `Senior`)
  * stating whether the respective member is to be placed in the senior or open category.
  */
-export function openOrSenior(data: number[][]): string[] {
+function openOrSenior(data: number[][]): string[] {
   const result: string[] = [];
 
   data.forEach((member) => {

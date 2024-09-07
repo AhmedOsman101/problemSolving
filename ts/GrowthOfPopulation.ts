@@ -14,7 +14,7 @@
  * an integer: `252.8` people round down to `252` persons.
 
  */
-export const nbYear = (
+const nbYear = (
   initialPopulation: number,
   percentage: number,
   newInhabitants: number,

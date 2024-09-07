@@ -12,7 +12,7 @@
  * empty value like None or null, depending on your language. You may assume the
  * argument is non-negative.
  */
-export function findNextSquare(sq: number): number {
+function findNextSquare(sq: number): number {
   const isPerfect = (n: number): boolean => !`${Math.sqrt(n)}`.includes(".");
 
   if (!isPerfect(sq)) return -1;

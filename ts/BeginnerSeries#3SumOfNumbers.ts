@@ -11,7 +11,7 @@
  * @param b
  * @returns
  */
-export function getSum(a: number, b: number): number {
+function getSum(a: number, b: number): number {
   if (a === b) return a;
 
   let min: number, max: number;
