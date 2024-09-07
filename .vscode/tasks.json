@@ -6,7 +6,8 @@
     {
       "label": "genDiff",
       "type": "shell",
-      "command": "git diff --staged --diff-filter=d > diff.txt",
+      // "command": "git diff --staged --diff-filter=d > diff.txt",
+      "command": "git diff --staged --diff-filter=d | copyq add - && copyq select 0",
       "problemMatcher": []
     }
   ]
