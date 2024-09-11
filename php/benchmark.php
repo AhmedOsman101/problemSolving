@@ -6,5 +6,5 @@ function benchmark($callback) {
   $endTime = microtime(true); // Get the end time
 
   $executionTime = $endTime - $startTime; // Calculate the time difference
-  echo "Execution time: " . number_format($executionTime * 1_000_000, 3) . " ms\n";
+  echo "\nExecution time: " . number_format($executionTime * 1_000_000, 3) . " ms\n";
 }
