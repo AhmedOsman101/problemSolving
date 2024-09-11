@@ -1,6 +1,6 @@
 <?php
 
-function measureRuntime($callback) {
+function benchmark($callback) {
   $startTime = microtime(true); // Get the current time in seconds with microseconds
   $callback(); // Execute the callback function
   $endTime = microtime(true); // Get the end time
