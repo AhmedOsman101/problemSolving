@@ -11,7 +11,7 @@
  * @returns
  */
 function friend(friends: string[]): string[] {
-  return friends.filter((name) => name.length === 4);
+	return friends.filter((name) => name.length === 4);
 }
 
 console.log(friend(["Ryan", "Kieran", "Jason", "Yous"]));

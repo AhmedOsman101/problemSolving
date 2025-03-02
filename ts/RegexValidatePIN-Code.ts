@@ -9,7 +9,7 @@
  * @returns
  */
 const validatePin = (pin: string): boolean => {
-  return /^(\d{4}|\d{6})$/.test(pin);
+	return /^(\d{4}|\d{6})$/.test(pin);
 };
 
 console.info(validatePin("123456"));

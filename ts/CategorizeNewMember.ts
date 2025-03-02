@@ -13,23 +13,23 @@
  * stating whether the respective member is to be placed in the senior or open category.
  */
 function openOrSenior(data: number[][]): string[] {
-  const result: string[] = [];
+	const result: string[] = [];
 
-  data.forEach((member) => {
-    if (55 <= member[0] && 7 < member[1]) result.push("Senior");
-    else result.push("Open");
-  });
+	data.forEach((member) => {
+		if (55 <= member[0] && 7 < member[1]) result.push("Senior");
+		else result.push("Open");
+	});
 
-  return result;
+	return result;
 }
 
 const input = [
-  [18, 20],
-  [45, 2],
-  [61, 12],
-  [37, 6],
-  [21, 21],
-  [78, 9],
+	[18, 20],
+	[45, 2],
+	[61, 12],
+	[37, 6],
+	[21, 21],
+	[78, 9],
 ];
 
 console.info(openOrSenior(input)); // ["Open", "Open", "Senior", "Open", "Open", "Senior"];

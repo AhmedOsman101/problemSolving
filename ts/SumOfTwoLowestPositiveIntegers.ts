@@ -13,9 +13,9 @@
  */
 
 function sumTwoSmallestNumbers(numbers: Array<number>): number {
-  numbers.sort((a, b) => a - b);
+	numbers.sort((a, b) => a - b);
 
-  return numbers[0] + numbers[1];
+	return numbers[0] + numbers[1];
 }
 
 console.info(sumTwoSmallestNumbers([19, 5, 42, 2, 77]));

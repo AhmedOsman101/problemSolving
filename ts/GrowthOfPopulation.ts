@@ -15,20 +15,20 @@
 
  */
 const nbYear = (
-  initialPopulation: number,
-  percentage: number,
-  newInhabitants: number,
-  target: number
+	initialPopulation: number,
+	percentage: number,
+	newInhabitants: number,
+	target: number,
 ): number => {
-  let population: number = initialPopulation;
-  let years = 0;
+	let population: number = initialPopulation;
+	let years = 0;
 
-  while (population < target) {
-    population += Math.floor(population * (percentage / 100) + newInhabitants); // no decimals allowed
-    years++;
-  }
+	while (population < target) {
+		population += Math.floor(population * (percentage / 100) + newInhabitants); // no decimals allowed
+		years++;
+	}
 
-  return years;
+	return years;
 };
 
 console.info(nbYear(1500000, 2.5, 10000, 2000000)); // 10

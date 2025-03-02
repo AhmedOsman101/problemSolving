@@ -10,12 +10,12 @@
  */
 
 function miniMaxSum(arr: number[]): void {
-  arr.sort((a, b) => a - b);
+	arr.sort((a, b) => a - b);
 
-  const min = arr.slice(0, 4).reduce((prev, curr) => prev + curr);
-  const max = arr.slice(1, 5).reduce((prev, curr) => prev + curr);
+	const min = arr.slice(0, 4).reduce((prev, curr) => prev + curr);
+	const max = arr.slice(1, 5).reduce((prev, curr) => prev + curr);
 
-  console.log(`${min} ${max}`);
+	console.log(`${min} ${max}`);
 }
 
 miniMaxSum([1, 3, 5, 7, 9]);

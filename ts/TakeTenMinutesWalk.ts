@@ -20,20 +20,20 @@
 
  */
 function isValidWalk(walk: string[]): boolean {
-  if (walk.length !== 10) return false;
+	if (walk.length !== 10) return false;
 
-  const count: Record<string, number> = {
-    n: 0,
-    w: 0,
-    s: 0,
-    e: 0,
-  };
+	const count: Record<string, number> = {
+		n: 0,
+		w: 0,
+		s: 0,
+		e: 0,
+	};
 
-  walk.forEach((el) => count[el]++);
+	walk.forEach((el) => count[el]++);
 
-  return count.n === count.s && count.w === count.e;
+	return count.n === count.s && count.w === count.e;
 }
 
 console.info(
-  isValidWalk(["w", "e", "w", "e", "w", "e", "w", "e", "w", "e", "w", "e"])
+	isValidWalk(["w", "e", "w", "e", "w", "e", "w", "e", "w", "e", "w", "e"]),
 );

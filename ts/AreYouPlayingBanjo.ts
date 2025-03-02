@@ -13,7 +13,7 @@
  * @returns
  */
 function areYouPlayingBanjo(name: string): string {
-  return name.toUpperCase().startsWith("R")
-    ? `${name} plays banjo`
-    : `${name} does not play banjo`;
+	return name.toUpperCase().startsWith("R")
+		? `${name} plays banjo`
+		: `${name} does not play banjo`;
 }

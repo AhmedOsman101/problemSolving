@@ -13,16 +13,16 @@
  * argument is non-negative.
  */
 function findNextSquare(sq: number): number {
-  const isPerfect = (n: number): boolean => !`${Math.sqrt(n)}`.includes(".");
+	const isPerfect = (n: number): boolean => !`${Math.sqrt(n)}`.includes(".");
 
-  if (!isPerfect(sq)) return -1;
+	if (!isPerfect(sq)) return -1;
 
-  // Return the next square if sq is a perfect square, -1 otherwise
-  let i = sq + 1;
-  do {
-    if (isPerfect(i)) return i;
-    i++;
-  } while (true);
+	// Return the next square if sq is a perfect square, -1 otherwise
+	let i = sq + 1;
+	do {
+		if (isPerfect(i)) return i;
+		i++;
+	} while (true);
 }
 
 console.info(findNextSquare(121));

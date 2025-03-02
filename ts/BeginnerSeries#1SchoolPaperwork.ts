@@ -7,8 +7,8 @@
  * Your task is to calculate how many blank pages do you need. If `n < 0` or `m < 0` return `0`.
  */
 function paperwork(n: number, m: number): number {
-  if (n < 0 || m < 0) return 0;
-  return n * m;
+	if (n < 0 || m < 0) return 0;
+	return n * m;
 }
 
 console.info(paperwork(5, 5)); // 5 * 5 = 25

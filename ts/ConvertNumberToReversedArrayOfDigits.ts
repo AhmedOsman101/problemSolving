@@ -8,11 +8,11 @@
  * @returns
  */
 const digitize = (n: number): number[] => {
-  return n
-    .toString()
-    .split("")
-    .reverse()
-    .map((item) => +item);
+	return n
+		.toString()
+		.split("")
+		.reverse()
+		.map((item) => +item);
 };
 
 console.dir(digitize(35231));

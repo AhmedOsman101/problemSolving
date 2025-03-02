@@ -12,24 +12,24 @@
  * @returns
  */
 function getSum(a: number, b: number): number {
-  if (a === b) return a;
+	if (a === b) return a;
 
-  let min: number, max: number;
+	let min: number, max: number;
 
-  if (a < b) {
-    min = a;
-    max = b;
-  } else {
-    min = b;
-    max = a;
-  }
+	if (a < b) {
+		min = a;
+		max = b;
+	} else {
+		min = b;
+		max = a;
+	}
 
-  let sum: number = 0;
+	let sum = 0;
 
-  for (let i = min; i <= max; i++) {
-    sum += i;
-  }
-  return sum;
+	for (let i = min; i <= max; i++) {
+		sum += i;
+	}
+	return sum;
 }
 
 console.info(getSum(1, 0));
