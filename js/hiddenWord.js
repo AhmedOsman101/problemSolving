@@ -1,3 +1,5 @@
+// https://www.codewars.com/kata/5906a218dfeb0dbb52000005/train/javascript
+
 /**
  * returns the hidden word from the given number
  *
