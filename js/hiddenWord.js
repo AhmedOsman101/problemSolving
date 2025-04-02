@@ -29,5 +29,5 @@ function hiddenWord2(num) {
 
   return str;
 }
-console.log(hiddenWord(113678973)); // bbiadnmdi
+console.log(hiddenWord(113678973));  // bbiadnmdi
 console.log(hiddenWord2(113678973)); // bbiadnmdi
