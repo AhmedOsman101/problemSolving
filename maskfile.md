@@ -37,7 +37,7 @@ fi
 
 case $language in
   ts | typescript)
-    template=typescript.test.ts
+    template=typescript.ts
     target="$platform/typescript/$slug.test.ts"
     run="bun test $target"
     ;;
@@ -73,6 +73,27 @@ if [[ -z ${title:-} ]]; then
   title=$(tr '-' ' ' <<<"$slug" | awk '{ for (i = 1; i <= NF; i++) $i = toupper(substr($i, 1, 1)) substr($i, 2) } 1')
 fi
 
+# Derive a function name from the slug: camelCase for TS/PHP, as-is (dashes
+# allowed) for Bash. A leading digit gets an underscore prefix.
+case $language in
+  ts | typescript)
+    func=$(tr '-' ' ' <<<"$slug" | awk '{ for (i = 1; i <= NF; i++) $i = (i == 1 ? tolower(substr($i, 1, 1)) : toupper(substr($i, 1, 1))) substr($i, 2) } 1' | tr -d ' ')
+    ;;
+  php)
+    func=$(tr '-' '_' <<<"$slug")
+    ;;
+  bash | sh)
+    func=$slug
+    ;;
+  *)
+    func=solve
+    ;;
+esac
+
+if [[ $func =~ ^[0-9] ]]; then
+  func="_$func"
+fi
+
 # Escape characters that are special in a sed replacement.
 escape() {
   printf '%s' "$1" | sed -e 's/[&|\\]/\\&/g'
@@ -89,6 +110,7 @@ render() {
     -e "s|{{TITLE}}|$(escape "$title")|g" \
     -e "s|{{URL}}|$(escape "$url")|g" \
     -e "s|{{SLUG}}|$(escape "$slug")|g" \
+    -e "s|{{FUNC}}|$(escape "$func")|g" \
     -e "s|{{PLATFORM}}|$(escape "$platform")|g" \
     "$ROOT/templates/$tmpl" >"$out"
 }
@@ -234,17 +256,17 @@ set -euo pipefail
 cd "${MASKFILE_DIR:?}"
 
 echo "==> TypeScript (biome)"
-mapfile -t ts_files < <(find leetcode codewars etc templates scripts -name '*.ts' -type f)
+mapfile -t ts_files < <(find leetcode codewars etc scripts -name '*.ts' -type f)
 if ((${#ts_files[@]})); then
   biome-check "${ts_files[@]}"
 fi
 
 echo "==> Bash (shellfmt)"
-mapfile -t bash_files < <(find leetcode codewars etc lib templates -name '*.sh' -type f)
+mapfile -t bash_files < <(find leetcode codewars etc lib -name '*.sh' -type f)
 for file in "${bash_files[@]}"; do
   shellfmt -i -f "$file"
 done
 
 echo "==> PHP (phpfmt)"
-phpfmt leetcode codewars etc lib templates
+phpfmt leetcode codewars etc lib
 ```

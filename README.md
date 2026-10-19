@@ -98,6 +98,9 @@ A bare file name is resolved if it is unique, e.g. `mask strip two-sum.test.ts`.
   (`//` for TypeScript, `#` for Bash, PHP and bats).
 - TypeScript files are named `<slug>.test.ts` so `bun test` discovers them
   without any extra configuration.
+- `mask new` derives the function name from the slug: camelCase for TypeScript
+  (`two-sum` → `twoSum`), snake_case for PHP (`two-sum` → `two_sum`), as-is for
+  Bash (`two-sum`).
 - Bash solutions only define functions and end with
   `if [[ ${BASH_SOURCE[0]} == "$0" ]]` so the `.bats` file can source them
   without running anything. Tests use `bats-assert` (`run`, `assert_output`, ...).

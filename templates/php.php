@@ -8,8 +8,8 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../lib/php/test.php';
 
 // TODO: implement
-function solve(mixed $input): mixed {
-  throw new RuntimeException('TODO: implement solve()');
+function {{FUNC}}(mixed $input): mixed {
+  throw new RuntimeException('TODO: implement {{FUNC}}()');
 }
 
-// check(solve(...), 'expected', 'example 1');
+// check({{FUNC}}(...), 'expected', 'example 1');

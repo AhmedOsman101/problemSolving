@@ -3,13 +3,13 @@
 
 import { describe, expect, test } from "bun:test";
 
-export function solve(input: unknown): unknown {
-  throw new Error("TODO: implement solve()");
+export function {{FUNC}}(input: unknown): unknown {
+  throw new Error("TODO: implement {{FUNC}}()");
 }
 
 describe("{{TITLE}}", () => {
   // Replace this with real cases from the problem statement.
   test.skip("example 1", () => {
-    expect(solve(null)).toBe(null);
+    expect({{FUNC}}(null)).toBe(null);
   });
 });

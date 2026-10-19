@@ -3,11 +3,11 @@
 # Link: {{URL}}
 
 # TODO: implement
-solve() {
+{{FUNC}}() {
   :
 }
 
 # Run manually: bash {{PLATFORM}}/bash/{{SLUG}}.sh
 if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
-  solve
+  {{FUNC}}
 fi
