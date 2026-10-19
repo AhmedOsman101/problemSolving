@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Problem Solving — Field Guide</title>
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/prism.css">
+<script src="assets/prism.js" defer></script>
+<style>
+  .toc {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--panel);
+    padding: 1rem 1.3rem;
+    margin: 1.8rem 0;
+  }
+  .toc p {
+    margin: 0 0 .5rem;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--muted);
+  }
+  .toc ol {
+    margin: 0;
+    padding-left: 1.3rem;
+    columns: 2;
+    column-gap: 2rem;
+    font-size: .95rem;
+  }
+  .toc li { margin: .15rem 0; }
+  @media (max-width: 34rem) { .toc ol { columns: 1; } }
+
+  .pill {
+    display: inline-block;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: .72rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: .12rem .45rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    vertical-align: .12em;
+  }
+  .pill.ts  { color: #9cc4f0; border-color: #3a5a80; }
+  .pill.bash { color: #a7d38a; border-color: #4a6b3a; }
+  .pill.php { color: #b9b3e8; border-color: #55507d; }
+
+  .flow {
+    font-family: "JetBrainsMonoNF Nerd Font", ui-monospace, Menlo, Consolas, monospace;
+    font-size: .88rem;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+  .flow b { color: var(--accent); font-weight: 700; }
+
+  kbd {
+    font-family: "JetBrainsMonoNF Nerd Font", ui-monospace, monospace;
+    font-size: .82em;
+    border: 1px solid var(--line);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    padding: .05em .35em;
+    background: var(--panel);
+  }
+  table.compact td, table.compact th { padding: .38rem .55rem; }
+  td code { white-space: nowrap; }
+  @media (max-width: 34rem) { td code { white-space: normal; } }
+  .muted { color: var(--muted); }
+  .center { text-align: center; }
+</style>
+</head>
+<body>
+
+<p class="lesson-kicker">Tutorial · repo field guide</p>
+<h1>Problem Solving — Field Guide</h1>
+<p class="lesson-lede">Everything you need to add a problem, test it, and keep the repo green. No prior knowledge of the setup assumed.</p>
+
+<nav class="toc" aria-label="Contents">
+  <p>Contents</p>
+  <ol>
+    <li><a href="#model">The mental model</a></li>
+    <li><a href="#quick">The 60-second loop</a></li>
+    <li><a href="#new">Scaffolding with <code>mask new</code></a></li>
+    <li><a href="#run">Running one problem</a></li>
+    <li><a href="#tests">Testing</a></li>
+    <li><a href="#types">Type checking</a></li>
+    <li><a href="#lintfmt">Lint &amp; format</a></li>
+    <li><a href="#check"><code>mask check</code></a></li>
+    <li><a href="#languages">Language cheat sheets</a></li>
+    <li><a href="#rules">Rules &amp; gotchas</a></li>
+    <li><a href="#workflows">Walkthroughs</a></li>
+    <li><a href="#trouble">Troubleshooting</a></li>
+    <li><a href="#cheat">Cheat sheet</a></li>
+  </ol>
+</nav>
+
+<h2 id="model">1. The mental model</h2>
+
+<p>Two axes decide where a file lives: <strong>which site</strong> the problem came from, then <strong>which language</strong> you solved it in. That is the whole layout.</p>
+
+<pre class="language-text"><code class="language-text">/home/othman/work/problemSolving
+├── leetcode/          problems from leetcode.com
+│   ├── typescript/
+│   ├── bash/
+│   └── php/
+├── codewars/          problems from codewars.com
+├── etc/               anything else
+├── templates/         starter files used by `mask new`
+├── lib/php/test.php   the check() helper PHP solutions use
+├── maskfile.md        every task: new, run, test, lint, check, fmt
+├── tsconfig.json      TypeScript settings for `bun check`
+└── package.json       Bun types + scripts</code></pre>
+
+<p>So a LeetCode two-sum in TypeScript is <code>leetcode/typescript/two-sum.test.ts</code>. The same problem in PHP is <code>leetcode/php/two-sum.php</code>. Migrating a solution to another language never changes its platform folder.</p>
+
+<div class="callout">The <strong>name is the slug</strong>: lowercase, words joined by hyphens, matching the problem URL. <code>two-sum</code>, <code>sum-of-digits</code>, <code>fizz-buzz</code>. No CamelCase, no underscores, no spaces.</div>
+
+<p>Every problem file (solution <em>and</em> test) begins with the title and the link, so you can jump back to the statement without searching:</p>
+
+<pre class="language-typescript"><code class="language-typescript">// Problem: Two Sum
+// Link: https://leetcode.com/problems/two-sum/</code></pre>
+
+<p>The Bash and PHP templates use <code>#</code> comments instead of <code>//</code>. The scaffold writes these headers for you; you should never need to type one by hand.</p>
+
+<h2 id="quick">2. The 60-second loop</h2>
+
+<div class="task">
+  <p><strong>The loop you will repeat for every problem:</strong></p>
+  <ol>
+    <li>Scaffold: <code>mask new &lt;platform&gt; &lt;language&gt; &lt;slug&gt; &lt;url&gt;</code></li>
+    <li>Implement the solution and write real test cases.</li>
+    <li>Run just that solution: <code>mask run &lt;platform&gt; &lt;language&gt; &lt;slug&gt;</code></li>
+    <li>Before committing: <code>mask check</code> (all tests + lint).</li>
+  </ol>
+  <p>Formatting is a separate, safe-to-run-at-any-time step: <code>mask fmt</code>.</p>
+</div>
+
+<p>A concrete run for LeetCode's Two Sum in TypeScript:</p>
+
+<pre class="language-bash"><code class="language-bash">mask new leetcode typescript two-sum https://leetcode.com/problems/two-sum/
+# created leetcode/typescript/two-sum.test.ts
+# run:     bun test leetcode/typescript/two-sum.test.ts
+
+mask run leetcode typescript two-sum</code></pre>
+
+<h2 id="new">3. Scaffolding with <code>mask new</code></h2>
+
+<pre class="language-text"><code class="language-text">mask new &lt;platform&gt; &lt;language&gt; &lt;slug&gt; &lt;url&gt; [title]</code></pre>
+
+<table class="compact">
+  <thead>
+    <tr><th>Argument</th><th>Accepted values</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>platform</code></td><td><code>leetcode</code>, <code>codewars</code>, <code>etc</code></td></tr>
+    <tr><td><code>language</code></td><td><code>ts</code>/<code>typescript</code>, <code>bash</code>/<code>sh</code>, <code>php</code></td></tr>
+    <tr><td><code>slug</code></td><td>kebab-case file name, e.g. <code>two-sum</code> (validated)</td></tr>
+    <tr><td><code>url</code></td><td>must start with <code>http://</code> or <code>https://</code> (validated)</td></tr>
+    <tr><td><code>title</code></td><td>optional; defaults to the slug title-cased (<code>two-sum</code> → “Two Sum”)</td></tr>
+  </tbody>
+</table>
+
+<p>What gets created, per language:</p>
+
+<table class="compact">
+  <thead>
+    <tr><th>Language</th><th>File(s) created</th><th>Test runner</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="pill ts">TS</span></td><td><code>&lt;platform&gt;/typescript/&lt;slug&gt;.test.ts</code></td><td>Bun</td></tr>
+    <tr><td><span class="pill bash">Bash</span></td><td><code>&lt;slug&gt;.sh</code> + <code>&lt;slug&gt;.bats</code></td><td>bats</td></tr>
+    <tr><td><span class="pill php">PHP</span></td><td><code>&lt;platform&gt;/php/&lt;slug&gt;.php</code></td><td>the file itself</td></tr>
+  </tbody>
+</table>
+
+<p>Under the hood the task copies <code>templates/&lt;language&gt;</code>, substitutes <code>{{TITLE}}</code>, <code>{{URL}}</code>, <code>{{SLUG}}</code> and <code>{{PLATFORM}}</code>, then refuses to overwrite anything that already exists. Pass <code>--force</code> (or <code>-f</code>) when you really want to replace a file:</p>
+
+<pre class="language-bash"><code class="language-bash">mask new --force leetcode typescript two-sum https://leetcode.com/problems/two-sum/</code></pre>
+
+<div class="callout warn">If <code>mask new</code> stops with “already exists”, that is the guard working. Either pick a new slug or add <code>--force</code> deliberately — do not delete files by hand to get around it.</div>
+
+
+<h2 id="run">4. Running one problem</h2>
+
+<p><code>mask run</code> picks the right runner and file for you:</p>
+
+<pre class="language-bash"><code class="language-bash">mask run leetcode typescript two-sum   # bun test leetcode/typescript/two-sum.test.ts
+mask run leetcode bash two-sum         # bats      leetcode/bash/two-sum.bats
+mask run leetcode php two-sum          # php       leetcode/php/two-sum.php</code></pre>
+
+<p>The raw commands are worth knowing when you want to pass extra flags:</p>
+
+<table class="compact">
+  <thead><tr><th>Language</th><th>Direct command</th></tr></thead>
+  <tbody>
+    <tr><td><span class="pill ts">TS</span></td><td><code>bun test leetcode/typescript/two-sum.test.ts</code></td></tr>
+    <tr><td><span class="pill bash">Bash</span></td><td><code>bats leetcode/bash/two-sum.bats</code></td></tr>
+    <tr><td><span class="pill bash">Bash</span></td><td><code>bash leetcode/bash/two-sum.sh</code> <span class="muted">(manual demo only)</span></td></tr>
+    <tr><td><span class="pill php">PHP</span></td><td><code>php leetcode/php/two-sum.php</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Submission-ready JavaScript</h3>
+
+<p>Some sites only accept JavaScript. Do not maintain a second copy: write and test the TypeScript file, then strip it on demand.</p>
+
+<pre class="language-bash"><code class="language-bash">mask strip leetcode/typescript/two-sum.test.ts
+# prints plain JavaScript, ready to paste</code></pre>
+
+<p>The task removes the <code>bun:test</code> import and every <code>describe(...)</code> block, erases types with esbuild, drops <code>export</code> modifiers, then prints the result (esbuild must be in <code>PATH</code>). So this TypeScript…</p>
+
+<pre class="language-typescript"><code class="language-typescript">import { describe, expect, test } from "bun:test";
+
+export function twoSum(nums: number[], target: number): number[] {
+  const seen = new Map&lt;number, number&gt;();
+  // ...
+  return [];
+}
+
+describe("Two Sum", () =&gt; {
+  test("example 1", () =&gt; {
+    expect(twoSum([2, 7, 11, 15], 9)).toEqual([0, 1]);
+  });
+});</code></pre>
+
+<p>…becomes this JavaScript:</p>
+
+<pre class="language-javascript"><code class="language-javascript">function twoSum(nums, target) {
+  const seen = new Map();
+  // ...
+  return [];
+}</code></pre>
+
+<p>Write to a file instead of stdout with <code>-o</code>. A bare file name works when it is unique (<code>mask strip two-sum.test.ts</code>); if the same slug exists under two platforms, pass the full path.</p>
+
+<pre class="language-bash"><code class="language-bash">mask strip -o /tmp/two-sum.js leetcode/typescript/two-sum.test.ts</code></pre>
+
+<div class="callout warn">The TypeScript file is the source of truth. Never fix a bug in a hand-copied JS file — fix the TS, run its tests, then strip again.</div>
+
+<h2 id="tests">5. Testing</h2>
+
+<p><code>mask test</code> runs all suites in one go:</p>
+
+<pre class="language-bash"><code class="language-bash">mask test
+# bun test              → every *.test.ts
+# bats &lt;all *.bats&gt;     → bash behaviour</code></pre>
+
+<p>Tests live next to the solution. Only Bash uses a separate file; the other two keep tests in the same file as the answer.</p>
+
+<h3><span class="pill ts">TS</span> Bun test in the same file</h3>
+
+<pre class="language-typescript"><code class="language-typescript">// Problem: Two Sum
+// Link: https://leetcode.com/problems/two-sum/
+
+import { describe, expect, test } from "bun:test";
+
+export function twoSum(nums: number[], target: number): number[] {
+  const seen = new Map&lt;number, number&gt;();
+
+  for (let i = 0; i &lt; nums.length; i++) {
+    const need = target - nums[i];
+    const j = seen.get(need);
+    if (j !== undefined) return [j, i];
+    seen.set(nums[i], i);
+  }
+
+  return [];
+}
+
+describe("Two Sum", () =&gt; {
+  test("example 1", () =&gt; {
+    expect(twoSum([2, 7, 11, 15], 9)).toEqual([0, 1]);
+  });
+});</code></pre>
+
+<p class="muted">The <code>.test.ts</code> suffix is what makes <code>bun test</code> discover the file with zero configuration.</p>
+
+<h3><span class="pill bash">Bash</span> a sourceable solution + a bats file</h3>
+
+<p>The solution defines functions and nothing else. The guard at the bottom runs a demo only when you execute the file directly; sourcing it from the test file stays silent.</p>
+
+<pre class="language-bash"><code class="language-bash">#!/usr/bin/env bash
+# Problem: Two Sum
+# Link: https://leetcode.com/problems/two-sum/
+
+two_sum() {
+  local target=${1}
+  shift
+  local -a nums=("$@")
+  local -A seen=()
+
+  for i in "${!nums[@]}"; do
+    local need=$((target - nums[${i}]))
+    if [[ -n ${seen[${need}]+x} ]]; then
+      echo "${seen[${need}]} ${i}"
+      return 0
+    fi
+    seen[${nums[${i}]}]=${i}
+  done
+}
+
+# Runs only when executed, not when sourced by the .bats file.
+if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
+  two_sum 9 2 7 11 15
+fi</code></pre>
+
+<pre class="language-bash"><code class="language-bash">#!/usr/bin/env bats
+# Problem: Two Sum
+# Link: https://leetcode.com/problems/two-sum/
+
+bats_load_library bats-support
+bats_load_library bats-assert
+
+setup() {
+  source "${BATS_TEST_DIRNAME}/two-sum.sh"
+}
+
+@test "example 1" {
+  run two_sum 9 2 7 11 15
+  assert_success
+  assert_output "0 1"
+}</code></pre>
+
+<p>bats-assert gives you <code>assert_success</code>, <code>assert_failure</code>, <code>assert_output</code>, <code>assert_line</code>, <code>refute_output</code> and friends. bats-file is installed too, for problems that touch the filesystem (<code>assert_file_exists</code>, …).</p>
+
+<div class="callout">Do not add sideways checks to the <code>.sh</code> file. If you want a <code>check()</code>-style assertion, write a bats <code>@test</code> instead — that is the whole point of the second file.</div>
+
+<h3><span class="pill php">PHP</span> assertions at the bottom</h3>
+
+<pre class="language-php"><code class="language-php">&lt;?php
+// Problem: Two Sum
+// Link: https://leetcode.com/problems/two-sum/
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../lib/php/test.php';
+
+function two_sum(array $nums, int $target): array {
+  $seen = [];
+
+  foreach ($nums as $i =&gt; $n) {
+    $need = $target - $n;
+    if (isset($seen[$need])) {
+      return [$seen[$need], $i];
+    }
+    $seen[$n] = $i;
+  }
+
+  return [];
+}
+
+check(two_sum([2, 7, 11, 15], 9), [0, 1], 'example 1');</code></pre>
+
+<p><code>check(actual, expected, label)</code> exits non-zero on the first mismatch, so <code>php file.php</code> doubles as the test run.</p>
+
+<h2 id="types">6. Type checking with <code>bun check</code></h2>
+
+<p>Bun 1.4 ships a builtin type checker. It reads <code>tsconfig.json</code> and checks the files under <code>leetcode/</code>, <code>codewars/</code> and <code>etc/</code>:</p>
+
+<pre class="language-bash"><code class="language-bash">bun check
+# ✓ No type errors in 1 file</code></pre>
+
+<p>It fails the command on real type errors, so it is safe to use as a gate:</p>
+
+<pre class="language-bash"><code class="language-bash">bun check
+# &lt;error file="etc/typescript/bad-type.ts" line="1" column="7" code="TS2322"&gt;
+# Type 'string' is not assignable to type 'number'.
+# Found 1 error in 1 file, checked 2 files</code></pre>
+
+<div class="callout warn"><strong>Never add a package.json script named <code>check</code>.</strong> Bun resolves scripts before builtin subcommands, so a <code>"check"</code> script silently shadows <code>bun check</code> and the type checker never runs. That is why the repo has <code>"verify": "mask check"</code> instead.</div>
+
+
+<h2 id="lintfmt">7. Lint &amp; format</h2>
+
+<p><code>mask lint</code> catches things tests do not:</p>
+
+<table class="compact">
+  <thead><tr><th>Step</th><th>Tool</th><th>Covers</th></tr></thead>
+  <tbody>
+    <tr><td><code>bun check</code></td><td>Bun</td><td>TypeScript types</td></tr>
+    <tr><td><code>shellcheck</code></td><td>ShellCheck</td><td>every <code>*.sh</code> under the three platforms + <code>lib/</code></td></tr>
+    <tr><td><code>php -l</code></td><td>PHP</td><td>syntax of every <code>*.php</code></td></tr>
+  </tbody>
+</table>
+
+<p><code>mask fmt</code> formats instead of complaining. It uses your own formatter scripts from <code>PATH</code>:</p>
+
+<table class="compact">
+  <thead><tr><th>Language</th><th>Command used</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td><span class="pill ts">TS</span></td><td><code>biome-check</code></td><td>runs <code>biome check --fix</code></td></tr>
+    <tr><td><span class="pill bash">Bash</span></td><td><code>shellfmt -i -f</code></td><td>shfmt + ShellCheck fixes, per <code>.sh</code> file</td></tr>
+    <tr><td><span class="pill php">PHP</span></td><td><code>phpfmt</code></td><td>phpcbf + php-cs-fixer, in place</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">Two deliberate exceptions: <code>.bats</code> files are skipped by <code>shellcheck</code>/<code>shellfmt</code> (they are not plain shell syntax), and <code>templates/</code> is formatted but not linted. Expect <code>phpfmt</code> to report unfixable docblock sniffs for small kata solutions — it still exits 0 and writes the file.</div>
+
+<pre class="language-bash"><code class="language-bash">mask fmt      # may rewrite files — run it whenever, then re-run tests
+mask lint     # read-only checks, no rewrites</code></pre>
+
+<h2 id="check">8. <code>mask check</code>: the gate</h2>
+
+<p><code>mask check</code> is the one command to trust before a commit. It runs, in order:</p>
+
+<ol class="flow">
+  <li><b>$MASK test</b> → bun test, bats</li>
+  <li><b>$MASK lint</b> → bun check, shellcheck, php -l</li>
+  <li>prints <b>all checks passed</b> only if everything succeeded</li>
+</ol>
+
+<p>It does <em>not</em> format. That is intentional: a check should never mutate the working tree. Run <code>mask fmt</code> separately (then <code>mask check</code> again if formatting changed code).</p>
+
+
+<h2 id="languages">9. Language cheat sheets</h2>
+
+<h3><span class="pill ts">TypeScript</span></h3>
+<ul>
+  <li><strong>File:</strong> <code>&lt;platform&gt;/typescript/&lt;slug&gt;.test.ts</code></li>
+  <li><strong>Template:</strong> <code>templates/typescript.test.ts</code> (one skipped example test)</li>
+  <li><strong>Solve:</strong> export a function/class, write real <code>test(...)</code> cases in the <code>describe</code>, delete the <code>test.skip</code></li>
+  <li><strong>Run:</strong> <code>mask run leetcode typescript two-sum</code> or <code>bun test path</code></li>
+  <li><strong>Types:</strong> <code>bun check</code></li>
+</ul>
+
+<h3><span class="pill bash">Bash</span></h3>
+<ul>
+  <li><strong>Files:</strong> <code>&lt;slug&gt;.sh</code> (functions) + <code>&lt;slug&gt;.bats</code> (tests)</li>
+  <li><strong>Templates:</strong> <code>templates/bash.sh</code> and <code>templates/bash.bats</code></li>
+  <li><strong>Solve:</strong> implement the function; keep the <code>BASH_SOURCE</code> guard at the bottom</li>
+  <li><strong>Test:</strong> <code>setup()</code> sources the <code>.sh</code>, each <code>@test</code> uses <code>run</code> + <code>assert_output</code></li>
+  <li><strong>Run:</strong> <code>mask run leetcode bash two-sum</code> or <code>bats path.bats</code></li>
+  <li><strong>Libraries:</strong> <code>bats-support</code>, <code>bats-assert</code>, <code>bats-file</code></li>
+</ul>
+
+<h3><span class="pill php">PHP</span></h3>
+<ul>
+  <li><strong>File:</strong> <code>&lt;platform&gt;/php/&lt;slug&gt;.php</code></li>
+  <li><strong>Template:</strong> <code>templates/php.php</code>, with <code>declare(strict_types=1)</code></li>
+  <li><strong>Solve:</strong> implement the function, then add <code>check(actual, expected, 'label')</code> lines at the bottom</li>
+  <li><strong>Run:</strong> <code>mask run leetcode php two-sum</code> or <code>php path.php</code></li>
+  <li><strong>Helper:</strong> <code>lib/php/test.php</code> — exits 1 on the first mismatch</li>
+</ul>
+
+<h2 id="rules">10. Rules &amp; gotchas</h2>
+
+<table class="compact">
+  <thead><tr><th>Rule</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>Header in every solution <em>and</em> test file</td><td>You can open any file and know the problem; agents follow the same rule.</td></tr>
+    <tr><td>kebab-case slug = file name</td><td><code>mask new</code> validates it; keeps paths predictable.</td></tr>
+    <tr><td>One problem per file (Bash: one pair)</td><td>Grep/jump by slug; no hidden shared state between problems.</td></tr>
+    <tr><td>Do not add a <code>check</code> script to package.json</td><td>It shadows <code>bun check</code>, disabling type checking.</td></tr>
+    <tr><td>Bash solutions only define functions</td><td>Sourcing from bats must not execute tests or demos.</td></tr>
+    <tr><td>Let <code>mask new</code> create files</td><td>Guarantees the header, the right folder and the right suffixes.</td></tr>
+    <tr><td>Empty language folders stay via <code>.gitkeep</code></td><td>Git does not track directories; the structure stays visible.</td></tr>
+  </tbody>
+</table>
+
+<p>Adding a brand-new <em>platform</em> (not just another LeetCode problem) is the one case the tooling does not automate. Create the language folders you use (or all of them, with a <code>.gitkeep</code>) and start scaffolding.</p>
+
+<h2 id="workflows">11. Three walkthroughs</h2>
+
+<h3>LeetCode problem in TypeScript</h3>
+<ol>
+  <li><code>mask new leetcode typescript valid-anagram https://leetcode.com/problems/valid-anagram/</code></li>
+  <li>Implement <code>isAnagram</code> in the file.</li>
+  <li>Replace <code>test.skip</code> with real cases from the statement.</li>
+  <li><code>mask run leetcode typescript valid-anagram</code></li>
+  <li><code>mask fmt &amp;&amp; mask check</code></li>
+</ol>
+
+<h3>CodeWars kata in Bash</h3>
+<ol>
+  <li><code>mask new codewars bash sum-of-digits https://www.codewars.com/kata/541c8630095125aba6000c00</code></li>
+  <li>Implement the function in <code>sum-of-digits.sh</code>; leave the guard alone.</li>
+  <li>In <code>sum-of-digits.bats</code>, replace the skipped test with <code>run</code> + <code>assert_output</code>.</li>
+  <li><code>mask run codewars bash sum-of-digits</code></li>
+  <li><code>mask check</code></li>
+</ol>
+
+<h3>Problem in PHP</h3>
+<ol>
+  <li><code>mask new etc php reverse-string https://example.com/reverse-string</code></li>
+  <li>Implement it in <code>etc/php/reverse-string.php</code>.</li>
+  <li>Add <code>check(...)</code> lines for the examples and edge cases.</li>
+  <li><code>mask run etc php reverse-string</code></li>
+  <li><code>mask fmt</code>, then <code>mask check</code></li>
+</ol>
+
+<h2 id="trouble">12. Troubleshooting</h2>
+
+<table class="compact">
+  <thead><tr><th>Symptom</th><th>Cause / fix</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>bun check</code> runs <code>mask check</code> instead of type checking</td>
+      <td>A <code>"check"</code> script in package.json shadows the builtin. Rename it (<code>"verify"</code>) and run <code>bun check</code> again.</td>
+    </tr>
+    <tr>
+      <td><code>mask new</code>: “already exists”</td>
+      <td>Intentional guard. Use a different slug, or <code>--force</code> if you mean to overwrite.</td>
+    </tr>
+    <tr>
+      <td><code>bats: command not found</code></td>
+      <td>Install <code>bats</code>; tests also need <code>bats-assert</code> and <code>bats-support</code> (both already present on this machine).</td>
+    </tr>
+    <tr>
+      <td>bats exits 0 but nothing ran</td>
+      <td>Check the file ends in <code>.bats</code> and each case starts with <code>@test "..."</code>.</td>
+    </tr>
+    <tr>
+      <td>ShellCheck complains about unbraced variables (<code>SC2250</code>)</td>
+      <td>This setup prefers braces: <code>${var}</code>, and indexes as <code>${arr[${i}]}</code>. <code>mask fmt</code> does not fix every style warning.</td>
+    </tr>
+    <tr>
+      <td><code>bun check</code> ignores a file</td>
+      <td>Only <code>leetcode/**</code>, <code>codewars/**</code>, <code>etc/**</code> are in <code>tsconfig.json</code>’s <code>include</code>.</td>
+    </tr>
+    <tr>
+      <td><code>php -l</code> passes but execution fails</td>
+      <td>Expected: the template’s <code>solve()</code> throws until you implement it (and unused functions do not run).</td>
+    </tr>
+    <tr>
+      <td><code>mask</code> not found</td>
+      <td>Install the task runner (already in <code>PATH</code> here) or invoke <code>mask --maskfile maskfile.md &lt;task&gt;</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="cheat">13. Cheat sheet</h2>
+
+<table class="compact">
+  <thead><tr><th>Goal</th><th>Command</th></tr></thead>
+  <tbody>
+    <tr><td>List tasks</td><td><code>mask --help</code></td></tr>
+    <tr><td>Scaffold</td><td><code>mask new &lt;platform&gt; &lt;language&gt; &lt;slug&gt; &lt;url&gt; [title]</code></td></tr>
+    <tr><td>Run one</td><td><code>mask run &lt;platform&gt; &lt;language&gt; &lt;slug&gt;</code></td></tr>
+    <tr><td>Submit to a JS-only site</td><td><code>mask strip &lt;file.ts&gt;</code></td></tr>
+    <tr><td>All tests</td><td><code>mask test</code></td></tr>
+    <tr><td>TS types</td><td><code>bun check</code></td></tr>
+    <tr><td>Lint</td><td><code>mask lint</code></td></tr>
+    <tr><td>Format</td><td><code>mask fmt</code></td></tr>
+    <tr><td>Gate before commit</td><td><code>mask check</code></td></tr>
+  </tbody>
+</table>
+
+<div class="task">
+  <p><strong>Before you commit:</strong></p>
+  <ul>
+    <li>Header present in every new file (solution and test).</li>
+    <li>Slug matches the problem URL and the file name.</li>
+    <li>Real assertions, not the template’s <code>skip</code>/<code>todo</code>/<code>#[ignore]</code>.</li>
+    <li><code>mask fmt</code> then <code>mask check</code> both finish cleanly.</li>
+  </ul>
+</div>
+
+<p class="lesson-footer">Repo: <code>/home/othman/work/problemSolving</code> · This tutorial: <code>docs/index.html</code><br>
+Re-read the living docs in <code>README.md</code> and <code>AGENTS.md</code>; they are the source of truth if the tooling changes.</p>
+
+</body>
+</html>

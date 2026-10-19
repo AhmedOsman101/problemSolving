@@ -1,4 +1,7 @@
 *.out
-**/target/**
 node_modules
 vendor
+
+# OS / editor noise
+.DS_Store
+*.swp
