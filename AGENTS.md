@@ -23,8 +23,8 @@ Language conventions:
 - Bash: `<slug>.sh` (functions only, main guarded with
   `if [[ ${BASH_SOURCE[0]} == "$0" ]]`) plus `<slug>.bats` using bats-assert.
 - PHP: `<slug>.php` with `check(...)` from `lib/php/test.php`.
-- Function names derive from the slug (camelCase for TS, snake_case for PHP,
-  as-is for Bash).
+- Function names derive from the slug (camelCase for TS/Lua, snake_case for
+  PHP, as-is for Bash).
 
 Useful commands:
 
