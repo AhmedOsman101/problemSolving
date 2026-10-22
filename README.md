@@ -1,7 +1,7 @@
 # Problem Solving
 
 Solutions to problems from [LeetCode](https://leetcode.com/), [CodeWars](https://www.codewars.com/)
-and other sites (`etc/`), written in TypeScript, Bash and PHP.
+and other sites (`etc/`), written in TypeScript, Bash, PHP and Lua.
 
 Every solution file starts with the problem's title and link:
 
@@ -22,10 +22,11 @@ leetcode/
   typescript/   two-sum.test.ts
   bash/         two-sum.sh + two-sum.bats
   php/          two-sum.php
+  lua/          two-sum.tl
 codewars/
-  typescript/  bash/  php/
+  typescript/  bash/  php/  lua/
 etc/            (problems that are not from LeetCode or CodeWars)
-  typescript/  bash/  php/
+  typescript/  bash/  php/  lua/
 templates/      starter files used by `mask new`
 lib/            small helper for PHP solutions
 docs/           field guide (open docs/index.html)
@@ -33,13 +34,14 @@ maskfile.md     task runner (scaffold / run / test / lint / fmt)
 ```
 
 File names are kebab-case and match the URL slug (`two-sum`, `sum-of-digits`).
-Tests live next to the solution: in the same file for TypeScript and PHP, and in
-a sibling `<slug>.bats` file for Bash.
+Tests live next to the solution: in the same file for TypeScript, PHP and Lua,
+and in a sibling `<slug>.bats` file for Bash.
 
 ## Setup
 
 Requires `bun`, `php`, `bats` (with bats-assert and bats-support), `shellcheck`,
-`esbuild` (for `mask strip`) and [`mask`](https://github.com/jacobdeichert/mask).
+`esbuild` (for `mask strip`), `tl` + `ceru` (Teal compiler + formatter, for Lua)
+and [`mask`](https://github.com/jacobdeichert/mask).
 
 ```bash
 bun install
@@ -51,6 +53,7 @@ bun install
 mask new leetcode typescript two-sum https://leetcode.com/problems/two-sum/
 mask new codewars php sum-of-digits https://www.codewars.com/kata/541c8630095125aba6000c00
 mask new etc bash fizz-buzz https://example.com/fizz-buzz "Fizz Buzz"
+mask new etc lua reverse-string https://example.com/reverse-string
 ```
 
 `mask new` copies the matching file from `templates/` and fills in the title,
@@ -68,6 +71,8 @@ the problem link and the slug. Bash gets both a `<slug>.sh` solution and a
 | Bash tests | `bats leetcode/bash/two-sum.bats` |
 | Bash solution | `bash leetcode/bash/two-sum.sh` |
 | PHP | `php leetcode/php/two-sum.php` |
+| Lua | `tl run leetcode/lua/two-sum.tl` |
+| Lua type check | `tl check leetcode/lua/two-sum.tl` |
 | Lint everything | `mask lint` |
 | Everything (tests + lint) | `mask check` |
 | Format everything | `mask fmt` |
@@ -106,3 +111,5 @@ A bare file name is resolved if it is unique, e.g. `mask strip two-sum.test.ts`.
   without running anything. Tests use `bats-assert` (`run`, `assert_output`, ...).
 - PHP solutions call the `check(...)` helper from `lib/php/test.php` at the
   bottom of the file and exit non-zero on failure.
+- Lua solutions are written in Teal (`.tl`), type-checked with `tl check` and
+  run with `tl run`; `mask strip` compiles them to Lua with `tl gen`.

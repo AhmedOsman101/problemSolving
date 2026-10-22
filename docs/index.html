@@ -49,6 +49,7 @@
   .pill.ts  { color: #9cc4f0; border-color: #3a5a80; }
   .pill.bash { color: #a7d38a; border-color: #4a6b3a; }
   .pill.php { color: #b9b3e8; border-color: #55507d; }
+  .pill.lua { color: #e8c07d; border-color: #7d6a37; }
 
   .flow {
     font-family: "JetBrainsMonoNF Nerd Font", ui-monospace, Menlo, Consolas, monospace;
@@ -107,7 +108,8 @@
 ├── leetcode/          problems from leetcode.com
 │   ├── typescript/
 │   ├── bash/
-│   └── php/
+│   ├── php/
+│   └── lua/
 ├── codewars/          problems from codewars.com
 ├── etc/               anything else
 ├── templates/         starter files used by `mask new`
@@ -116,7 +118,7 @@
 ├── tsconfig.json      TypeScript settings for `bun check`
 └── package.json       Bun types + scripts</code></pre>
 
-<p>So a LeetCode two-sum in TypeScript is <code>leetcode/typescript/two-sum.test.ts</code>. The same problem in PHP is <code>leetcode/php/two-sum.php</code>. Migrating a solution to another language never changes its platform folder.</p>
+<p>So a LeetCode two-sum in TypeScript is <code>leetcode/typescript/two-sum.test.ts</code>, in PHP is <code>leetcode/php/two-sum.php</code>, and in Lua is <code>leetcode/lua/two-sum.tl</code>. Migrating a solution to another language never changes its platform folder.</p>
 
 <div class="callout">The <strong>name is the slug</strong>: lowercase, words joined by hyphens, matching the problem URL. <code>two-sum</code>, <code>sum-of-digits</code>, <code>fizz-buzz</code>. No CamelCase, no underscores, no spaces.</div>
 
@@ -158,7 +160,7 @@ mask run leetcode typescript two-sum</code></pre>
   </thead>
   <tbody>
     <tr><td><code>platform</code></td><td><code>leetcode</code>, <code>codewars</code>, <code>etc</code></td></tr>
-    <tr><td><code>language</code></td><td><code>ts</code>/<code>typescript</code>, <code>bash</code>/<code>sh</code>, <code>php</code></td></tr>
+    <tr><td><code>language</code></td><td><code>ts</code>/<code>typescript</code>, <code>bash</code>/<code>sh</code>, <code>php</code>, <code>lua</code>/<code>tl</code>/<code>teal</code></td></tr>
     <tr><td><code>slug</code></td><td>kebab-case file name, e.g. <code>two-sum</code> (validated)</td></tr>
     <tr><td><code>url</code></td><td>must start with <code>http://</code> or <code>https://</code> (validated)</td></tr>
     <tr><td><code>title</code></td><td>optional; defaults to the slug title-cased (<code>two-sum</code> → “Two Sum”)</td></tr>
@@ -175,6 +177,7 @@ mask run leetcode typescript two-sum</code></pre>
     <tr><td><span class="pill ts">TS</span></td><td><code>&lt;platform&gt;/typescript/&lt;slug&gt;.test.ts</code></td><td>Bun</td></tr>
     <tr><td><span class="pill bash">Bash</span></td><td><code>&lt;slug&gt;.sh</code> + <code>&lt;slug&gt;.bats</code></td><td>bats</td></tr>
     <tr><td><span class="pill php">PHP</span></td><td><code>&lt;platform&gt;/php/&lt;slug&gt;.php</code></td><td>the file itself</td></tr>
+    <tr><td><span class="pill lua">Lua</span></td><td><code>&lt;platform&gt;/lua/&lt;slug&gt;.tl</code></td><td><code>tl run</code></td></tr>
   </tbody>
 </table>
 
@@ -193,7 +196,8 @@ mask run leetcode typescript two-sum</code></pre>
 
 <pre class="language-bash"><code class="language-bash">mask run leetcode typescript two-sum   # bun test leetcode/typescript/two-sum.test.ts
 mask run leetcode bash two-sum         # bats      leetcode/bash/two-sum.bats
-mask run leetcode php two-sum          # php       leetcode/php/two-sum.php</code></pre>
+mask run leetcode php two-sum          # php       leetcode/php/two-sum.php
+mask run leetcode lua two-sum          # tl run    leetcode/lua/two-sum.tl</code></pre>
 
 <p>The raw commands are worth knowing when you want to pass extra flags:</p>
 
@@ -204,6 +208,7 @@ mask run leetcode php two-sum          # php       leetcode/php/two-sum.php</cod
     <tr><td><span class="pill bash">Bash</span></td><td><code>bats leetcode/bash/two-sum.bats</code></td></tr>
     <tr><td><span class="pill bash">Bash</span></td><td><code>bash leetcode/bash/two-sum.sh</code> <span class="muted">(manual demo only)</span></td></tr>
     <tr><td><span class="pill php">PHP</span></td><td><code>php leetcode/php/two-sum.php</code></td></tr>
+    <tr><td><span class="pill lua">Lua</span></td><td><code>tl run leetcode/lua/two-sum.tl</code></td></tr>
   </tbody>
 </table>
 
@@ -250,7 +255,8 @@ describe("Two Sum", () =&gt; {
 
 <pre class="language-bash"><code class="language-bash">mask test
 # bun test              → every *.test.ts
-# bats &lt;all *.bats&gt;     → bash behaviour</code></pre>
+# bats &lt;all *.bats&gt;     → bash behaviour
+# tl check + tl run     → every *.tl</code></pre>
 
 <p>Tests live next to the solution. Only Bash uses a separate file; the other two keep tests in the same file as the answer.</p>
 
@@ -398,6 +404,7 @@ check(two_sum([2, 7, 11, 15], 9), [0, 1], 'example 1');</code></pre>
     <tr><td><span class="pill ts">TS</span></td><td><code>biome-check</code></td><td>runs <code>biome check --fix</code></td></tr>
     <tr><td><span class="pill bash">Bash</span></td><td><code>shellfmt -i -f</code></td><td>shfmt + ShellCheck fixes, per <code>.sh</code> file</td></tr>
     <tr><td><span class="pill php">PHP</span></td><td><code>phpfmt</code></td><td>phpcbf + php-cs-fixer, in place</td></tr>
+    <tr><td><span class="pill lua">Lua</span></td><td><code>ceru</code></td><td>Teal formatter, in place</td></tr>
   </tbody>
 </table>
 
@@ -411,7 +418,7 @@ mask lint     # read-only checks, no rewrites</code></pre>
 <p><code>mask check</code> is the one command to trust before a commit. It runs, in order:</p>
 
 <ol class="flow">
-  <li><b>$MASK test</b> → bun test, bats</li>
+  <li><b>$MASK test</b> → bun test, bats, tl check + tl run</li>
   <li><b>$MASK lint</b> → bun check, shellcheck, php -l</li>
   <li>prints <b>all checks passed</b> only if everything succeeded</li>
 </ol>
@@ -449,6 +456,16 @@ mask lint     # read-only checks, no rewrites</code></pre>
   <li><strong>Helper:</strong> <code>lib/php/test.php</code> — exits 1 on the first mismatch</li>
 </ul>
 
+<h3><span class="pill lua">Lua</span></h3>
+<ul>
+  <li><strong>File:</strong> <code>&lt;platform&gt;/lua/&lt;slug&gt;.tl</code> (Teal source)</li>
+  <li><strong>Template:</strong> <code>templates/lua.tl</code></li>
+  <li><strong>Solve:</strong> implement the function; assertions at the bottom run via <code>tl run</code></li>
+  <li><strong>Run:</strong> <code>mask run leetcode lua two-sum</code> or <code>tl run path.tl</code></li>
+  <li><strong>Types:</strong> <code>tl check path.tl</code></li>
+  <li><strong>Submit:</strong> <code>mask strip path.tl</code> compiles to Lua with <code>tl gen</code></li>
+</ul>
+
 <h2 id="rules">10. Rules &amp; gotchas</h2>
 
 <table class="compact">
@@ -466,7 +483,7 @@ mask lint     # read-only checks, no rewrites</code></pre>
 
 <p>Adding a brand-new <em>platform</em> (not just another LeetCode problem) is the one case the tooling does not automate. Create the language folders you use (or all of them, with a <code>.gitkeep</code>) and start scaffolding.</p>
 
-<h2 id="workflows">11. Three walkthroughs</h2>
+<h2 id="workflows">11. Walkthroughs</h2>
 
 <h3>LeetCode problem in TypeScript</h3>
 <ol>
@@ -493,6 +510,15 @@ mask lint     # read-only checks, no rewrites</code></pre>
   <li>Add <code>check(...)</code> lines for the examples and edge cases.</li>
   <li><code>mask run etc php reverse-string</code></li>
   <li><code>mask fmt</code>, then <code>mask check</code></li>
+</ol>
+
+<h3>Problem in Lua (Teal)</h3>
+<ol>
+  <li><code>mask new etc lua reverse-string https://example.com/reverse-string</code></li>
+  <li>Implement it in <code>etc/lua/reverse-string.tl</code>.</li>
+  <li>Add <code>assert(...)</code> lines (Lua uses 1-based indices).</li>
+  <li><code>mask run etc lua reverse-string</code></li>
+  <li><code>mask strip etc/lua/reverse-string.tl</code> to get the compiled Lua</li>
 </ol>
 
 <h2 id="trouble">12. Troubleshooting</h2>
@@ -527,6 +553,10 @@ mask lint     # read-only checks, no rewrites</code></pre>
     <tr>
       <td><code>php -l</code> passes but execution fails</td>
       <td>Expected: the template’s <code>solve()</code> throws until you implement it (and unused functions do not run).</td>
+    </tr>
+    <tr>
+      <td><code>tl</code> not found</td>
+      <td>Install the Teal toolchain (<code>tl</code>, <code>ceru</code>) via LuaRocks.</td>
     </tr>
     <tr>
       <td><code>mask</code> not found</td>
